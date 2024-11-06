@@ -79,5 +79,7 @@ Each file tests a specific user scenario on a designated website and browser, as
 
 ## Videos
 https://github.com/user-attachments/assets/31d4b275-cb5c-44d1-a319-ac07ef968d35
+
 https://github.com/user-attachments/assets/85c0bfb8-aa44-486a-b21f-0e14efe51933
+
 https://github.com/user-attachments/assets/7c640ae9-cdda-4afd-82d6-046f163290fd
