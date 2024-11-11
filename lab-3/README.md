@@ -17,3 +17,5 @@ Below are screenshots showing the results of the tests:
 
 ## GitHub Actions
 Below are screenshots confirming the functionality of GitHub Actions:
+![image](https://github.com/user-attachments/assets/e3b0466a-ffdf-435b-91bb-4565f578ce50)
+
