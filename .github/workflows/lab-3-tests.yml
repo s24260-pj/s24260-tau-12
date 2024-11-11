@@ -21,6 +21,9 @@ jobs:
       with:
         python-version: '3.9'
 
+    - name: Add game directory to PYTHONPATH
+      run: echo "PYTHONPATH=$(pwd)/game" >> $GITHUB_ENV
+
     - name: Run tests with unittest
       run: |
         python -m unittest discover -s lab-3/tests -p "*.py"
