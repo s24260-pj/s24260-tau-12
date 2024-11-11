@@ -2,12 +2,13 @@ name: Python package
 
 on: [push, pull_request]
 
+defaults:
+  run:
+    working-directory: ./lab-3
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    env:
-      WORKING_DIR: ./lab-3
 
     steps:
     - uses: actions/checkout@v2
