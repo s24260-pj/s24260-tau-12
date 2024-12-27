@@ -41,3 +41,7 @@ This project contains integration tests for a User API that performs basic CRUD 
 - **Spring MockMvc** to simulate HTTP requests.
 - **Spring Boot** for creating the RESTful API.
 - **Jackson** for JSON processing.
+
+
+## Screenshot
+![image](https://github.com/user-attachments/assets/66404417-130c-4646-b11d-c4a6346df4c1)
