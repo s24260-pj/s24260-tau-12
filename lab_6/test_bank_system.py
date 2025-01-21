@@ -4,6 +4,7 @@ from unittest.mock import AsyncMock, patch
 from bank_system import Account, Bank, InsufficientFundsError
 
 
+# --- Fixtures ---
 @pytest.fixture
 def bank():
     return Bank()
@@ -18,6 +19,8 @@ def account():
 def account_two():
     return Account(account_number="67890", owner="Jane Doe", balance=500.0)
 
+
+# --- Tests for Account ---
 
 def test_deposit(account):
     account.deposit(200.0)
@@ -47,6 +50,8 @@ async def test_transfer_insufficient_funds(account, account_two):
         await account.transfer(account_two, 1200.0)
 
 
+# --- Tests for Bank ---
+
 def test_create_account(bank):
     bank.create_account("12345", "John Doe", 1000.0)
     account = bank.get_account("12345")
@@ -61,7 +66,6 @@ def test_get_account_not_found(bank):
 
 def test_get_account(bank):
     bank.create_account("12345", "John Doe", 1000.0)
-
     account = bank.get_account("12345")
     assert account.account_number == "12345"
     assert account.owner == "John Doe"
@@ -93,6 +97,7 @@ def test_mocking_external_authorization():
         assert account.balance == 700.0
         assert account_two.balance == 800.0
         mock_sleep.assert_called_once()
+
 
 def test_create_account_with_existing_number(bank):
     bank.create_account("12345", "John Doe", 1000.0)
