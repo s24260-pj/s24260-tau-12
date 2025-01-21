@@ -70,6 +70,7 @@ The project also includes a set of tests to verify the system's functionality.
 ---
 
 ## Screenshot
+![image](https://github.com/user-attachments/assets/eecff51b-feb2-4e3b-b667-87831ae058fd)
 ___
 
 ## Author
