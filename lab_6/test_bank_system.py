@@ -22,41 +22,62 @@ def account_two():
 
 # --- Tests for Account ---
 
-def test_deposit(account):
-    account.deposit(200.0)
-    assert account.balance == 1200.0
+@pytest.mark.parametrize("amount, expected_balance", [
+    (200.0, 1200.0),
+    (500.0, 1500.0),
+])
+def test_deposit(account, amount, expected_balance):
+    account.deposit(amount)
+    assert account.balance == expected_balance
 
 
-def test_withdraw(account):
-    account.withdraw(300.0)
-    assert account.balance == 700.0
+@pytest.mark.parametrize("amount, expected_balance", [
+    (300.0, 700.0),
+    (500.0, 500.0),
+    (1000.0, 0.0),
+])
+def test_withdraw(account, amount, expected_balance):
+    account.withdraw(amount)
+    assert account.balance == expected_balance
 
 
-def test_withdraw_insufficient_funds(account):
+@pytest.mark.parametrize("amount", [1100.0, 1500.0, 2000.0])
+def test_withdraw_insufficient_funds(account, amount):
     with pytest.raises(InsufficientFundsError):
-        account.withdraw(1100.0)
+        account.withdraw(amount)
 
 
 @pytest.mark.asyncio
-async def test_transfer(account, account_two):
-    await account.transfer(account_two, 400.0)
-    assert account.balance == 600.0
-    assert account_two.balance == 900.0
+@pytest.mark.parametrize("transfer_amount, expected_balance_acc1, expected_balance_acc2", [
+    (400.0, 600.0, 900.0),
+    (100.0, 900.0, 600.0),
+    (200.0, 800.0, 700.0),
+])
+async def test_transfer(account, account_two, transfer_amount, expected_balance_acc1, expected_balance_acc2):
+    await account.transfer(account_two, transfer_amount)
+    assert account.balance == expected_balance_acc1
+    assert account_two.balance == expected_balance_acc2
 
 
 @pytest.mark.asyncio
-async def test_transfer_insufficient_funds(account, account_two):
+@pytest.mark.parametrize("transfer_amount", [1200.0, 1500.0, 2000.0])
+async def test_transfer_insufficient_funds(account, account_two, transfer_amount):
     with pytest.raises(InsufficientFundsError):
-        await account.transfer(account_two, 1200.0)
+        await account.transfer(account_two, transfer_amount)
 
 
 # --- Tests for Bank ---
 
-def test_create_account(bank):
-    bank.create_account("12345", "John Doe", 1000.0)
-    account = bank.get_account("12345")
-    assert account.owner == "John Doe"
-    assert account.balance == 1000.0
+@pytest.mark.parametrize("account_number, owner, balance", [
+    ("12345", "John Doe", 1000.0),
+    ("67890", "Jane Doe", 500.0),
+    ("54321", "Alice", 750.0),
+])
+def test_create_account(bank, account_number, owner, balance):
+    bank.create_account(account_number, owner, balance)
+    account = bank.get_account(account_number)
+    assert account.owner == owner
+    assert account.balance == balance
 
 
 def test_get_account_not_found(bank):
@@ -64,16 +85,24 @@ def test_get_account_not_found(bank):
         bank.get_account("99999")
 
 
-def test_get_account(bank):
-    bank.create_account("12345", "John Doe", 1000.0)
-    account = bank.get_account("12345")
-    assert account.account_number == "12345"
-    assert account.owner == "John Doe"
-    assert account.balance == 1000.0
+@pytest.mark.parametrize("account_number, owner, balance", [
+    ("12345", "John Doe", 1000.0),
+    ("67890", "Jane Doe", 500.0),
+])
+def test_get_account(bank, account_number, owner, balance):
+    bank.create_account(account_number, owner, balance)
+    account = bank.get_account(account_number)
+    assert account.account_number == account_number
+    assert account.owner == owner
+    assert account.balance == balance
 
 
 @pytest.mark.asyncio
-async def test_process_transaction(bank):
+@pytest.mark.parametrize("transfer_amount, expected_balance_acc1, expected_balance_acc2", [
+    (200.0, 800.0, 700.0),
+    (100.0, 900.0, 600.0),
+])
+async def test_process_transaction(bank, transfer_amount, expected_balance_acc1, expected_balance_acc2):
     bank.create_account("12345", "John Doe", 1000.0)
     bank.create_account("67890", "Jane Doe", 500.0)
 
@@ -81,12 +110,12 @@ async def test_process_transaction(bank):
     account_two = bank.get_account("67890")
 
     async def transaction():
-        await account.transfer(account_two, 200.0)
+        await account.transfer(account_two, transfer_amount)
 
     await bank.process_transaction(transaction)
 
-    assert account.balance == 800.0
-    assert account_two.balance == 700.0
+    assert account.balance == expected_balance_acc1
+    assert account_two.balance == expected_balance_acc2
 
 
 def test_mocking_external_authorization():
